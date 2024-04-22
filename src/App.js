@@ -1,14 +1,12 @@
-
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
 const App = () => {
-  const [boardSize, setBoardSize] = useState({ rows: 4, cols: 4 });
+  const [boardSize, setBoardSize] = useState({ cols: 4, rows: 4 });
   const [board, setBoard] = useState([]);
 
   useEffect(() => {
     console.log("Initializing board...");
-
     initializeBoard();
   }, []);
 
@@ -19,55 +17,104 @@ const App = () => {
     let counter = 1;
   
     // Starta brädet med vald storlek
-    for (let i = 0; i < boardSize.rows; i++) {
+    for (let i = 0; i < boardSize.cols; i++) {
       const row = [];
-      for (let j = 0; j < boardSize.cols; j++) {
+      for (let j = 0; j < boardSize.rows; j++) {
         row.push(counter++);
       }
       newBoard.push(row);
     }
   
-    newBoard[boardSize.rows - 1][boardSize.cols - 1] = 0;
+    newBoard[boardSize.cols - 1][boardSize.rows - 1] = 0;
   
     setBoard(newBoard);
   };
 
   const shuffleBoard = () => {
-  const shuffledBoard = [...board];
+    const shuffledBoard = [...board];
 
-  // Slumpar
-  for (let i = shuffledBoard.length - 1; i > 0; i--) {
-    for (let j = shuffledBoard[i].length - 1; j > 0; j--) {
-      const randRow = Math.floor(Math.random() * (i + 1));
-      const randCol = Math.floor(Math.random() * (j + 1));
-      [shuffledBoard[i][j], shuffledBoard[randRow][randCol]] = [shuffledBoard[randRow][randCol], shuffledBoard[i][j]];
+    // Slumpar
+    for (let i = shuffledBoard.length - 1; i > 0; i--) {
+      for (let j = shuffledBoard[i].length - 1; j > 0; j--) {
+        const randRow = Math.floor(Math.random() * (i + 1));
+        const randCol = Math.floor(Math.random() * (j + 1));
+        [shuffledBoard[i][j], shuffledBoard[randRow][randCol]] = [shuffledBoard[randRow][randCol], shuffledBoard[i][j]];
+      }
     }
-  }
 
-  setBoard(shuffledBoard);
-};
+    setBoard(shuffledBoard);
+  };
 
   const handleTileClick = (row, col) => {
-    const emptyRow = board.findIndex(row => row.includes(0));
-    const emptyCol = board[emptyRow].indexOf(0);
+    
+    let emptyRow = board.findIndex(row => row.includes(0));
+let emptyCol = board[emptyRow].indexOf(0);
 
     if ((row === emptyRow && Math.abs(col - emptyCol) === 1) || (col === emptyCol && Math.abs(row - emptyRow) === 1)) {
       const newBoard = [...board];
-      [newBoard[row][col], newBoard[emptyRow][emptyCol]] = [newBoard[emptyRow][emptyCol], newBoard[row][col]];
+  
+      if (row === emptyRow) {
+        const start = Math.min(col, emptyCol);
+        const end = Math.max(col, emptyCol);
+  
+        for (let i = start; i <= end; i++) {
+          [newBoard[row][i], newBoard[emptyRow][emptyCol]] = [newBoard[emptyRow][emptyCol], newBoard[row][i]];
+        }
+      } else if (col === emptyCol) {
+        const start = Math.min(row, emptyRow);
+        const end = Math.max(row, emptyRow);
+  
+        for (let i = start; i <= end; i++) {
+          [newBoard[i][col], newBoard[emptyRow][emptyCol]] = [newBoard[emptyRow][emptyCol], newBoard[i][col]];
+        }
+      }
+  
+      setBoard(newBoard);
+    } else {
+      const newBoard = [...board];
+      let start, end;
+  
+      if (row === emptyRow) {
+        start = Math.min(col, emptyCol);
+        end = Math.max(col, emptyCol);
+  
+        for (let i = start; i <= end; i++) {
+          if (newBoard[row][i] !== 0) {
+            const temp = newBoard[row][i];
+            newBoard[row][i] = newBoard[emptyRow][emptyCol];
+            newBoard[emptyRow][emptyCol] = temp;
+            emptyCol = i; // Uppdatera kolumnen för den tomma rutan
+          }
+        }
+      } else if (col === emptyCol) {
+        start = Math.min(row, emptyRow);
+        end = Math.max(row, emptyRow);
+  
+        for (let i = start; i <= end; i++) {
+          if (newBoard[i][col] !== 0) {
+            const temp = newBoard[i][col];
+            newBoard[i][col] = newBoard[emptyRow][emptyCol];
+            newBoard[emptyRow][emptyCol] = temp;
+            emptyRow = i; // Uppdatera raden för den tomma rutan
+          }
+        }
+      }
+  
       setBoard(newBoard);
     }
   };
 
-  
+
+
   const isSolved = () => {
     if (!board || !board.length) {
       console.log("Brädet startade inte korrekt eller är tomt");
       return false;
     }
   
-    for (let i = 0; i < boardSize.rows; i++) {
-      for (let j = 0; j < boardSize.cols; j++) {
-        if (board[i][j] !== i * boardSize.cols + j + 1) {
+    for (let i = 0; i < boardSize.cols; i++) {
+      for (let j = 0; j < boardSize.rows; j++) {
+        if (board[i][j] !== i * boardSize.rows + j + 1) {
           return false;
         }
       }
@@ -88,7 +135,7 @@ const App = () => {
           </div>
         ))}
       </div>
-      <button onClick={shuffleBoard}>Slumpa</button>
+      <button id="slump-button" onClick={shuffleBoard}>Slumpa</button>
       {isSolved() && <p>Grattis!</p>}
     </div>
   );

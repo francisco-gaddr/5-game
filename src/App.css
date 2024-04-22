@@ -39,7 +39,13 @@
 
 .App {
   text-align: center;
-  font-family: 'Arial', sans-serif;
+
+    font-family: "Open Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
 }
 
 .board {
@@ -50,21 +56,37 @@
   border: 2px solid #333;
   border-radius: 5px;
   margin-bottom: 20px;
+
+  background-color: #cacaca;
+
+  
 }
 
 .tile {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
+  background-color: #9fbbe7;
+  border: 1px solid #170f0f;
+
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 40px;
   transition: all 0.3s ease; 
 }
 
 .tile.empty {
   background-color: #ccc; 
   cursor: default; 
-  margin-bottom:25px;
+  margin-bottom:45px;
+}
+
+#slump-button {
+
+  background: black;
+  color: white;
+  height: 35px;
+  padding-left: 30px;
+  padding-right: 30px;
+  font-size: 25px;
 }
