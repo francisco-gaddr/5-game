@@ -14,28 +14,31 @@ const App = () => {
     console.log("Initializing board...");
     initializeBoard();
     
+    
+    
   }, []);
 
-  console.log("Board:", board); 
 
+  /* Lagt till att den slumpar vid start */
   const initializeBoard = () => {
     const newBoard = [];
-    let counter = 1;
-  
-    // Start the board with the selected size
-    for (let i = 0; i < boardSize.cols; i++) {
+    const totalTiles = boardSize.cols * boardSize.rows;
+    const values = Array.from({ length: totalTiles }, (_, index) => index); 
+    const shuffledValues = values.sort(() => Math.random() - 0.5); // slumpa
+    
+    let counter = 0;
+    
+    for (let i = 0; i < boardSize.rows; i++) {
       const row = [];
-      for (let j = 0; j < boardSize.rows; j++) {
-        row.push(counter++);
+      for (let j = 0; j < boardSize.cols; j++) {
+        row.push(shuffledValues[counter++]);
       }
       newBoard.push(row);
     }
   
-    // Set the last element as the empty space
-    newBoard[boardSize.cols - 1][boardSize.rows - 1] = 0;
-  
     setBoard(newBoard);
   };
+
 
   const shuffleBoard = () => {
     const shuffledBoard = [...board];
@@ -90,6 +93,9 @@ let emptyCol = board[emptyRow].indexOf(0);
             const temp = newBoard[row][i];
             newBoard[row][i] = newBoard[emptyRow][emptyCol];
             newBoard[emptyRow][emptyCol] = temp;
+
+
+
             emptyCol = i; // Uppdatera kolumnen för den tomma rutan
           }
         }
@@ -102,7 +108,9 @@ let emptyCol = board[emptyRow].indexOf(0);
             const temp = newBoard[i][col];
             newBoard[i][col] = newBoard[emptyRow][emptyCol];
             newBoard[emptyRow][emptyCol] = temp;
-            emptyRow = i; // Uppdatera raden för den tomma rutan
+
+
+            emptyRow = i; 
           }
         }
       }
