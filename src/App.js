@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import './assets/fonts/OpenSans-VariableFont_wdth,wght.ttf'
 
 const App = () => {
-  const [boardSize, setBoardSize] = useState({ cols: 4, rows: 4 });
+
+  // Justera cols och rows
+  const [boardSize, setBoardSize] = useState({ cols: 4, rows:4 });
+
+
   const [board, setBoard] = useState([]);
 
   useEffect(() => {
     console.log("Initializing board...");
     initializeBoard();
+    
   }, []);
 
   console.log("Board:", board); 
@@ -16,7 +22,7 @@ const App = () => {
     const newBoard = [];
     let counter = 1;
   
-    // Starta brädet med vald storlek
+    // Start the board with the selected size
     for (let i = 0; i < boardSize.cols; i++) {
       const row = [];
       for (let j = 0; j < boardSize.rows; j++) {
@@ -25,6 +31,7 @@ const App = () => {
       newBoard.push(row);
     }
   
+    // Set the last element as the empty space
     newBoard[boardSize.cols - 1][boardSize.rows - 1] = 0;
   
     setBoard(newBoard);
@@ -112,9 +119,9 @@ let emptyCol = board[emptyRow].indexOf(0);
       return false;
     }
   
-    for (let i = 0; i < boardSize.cols; i++) {
-      for (let j = 0; j < boardSize.rows; j++) {
-        if (board[i][j] !== i * boardSize.rows + j + 1) {
+    for (let i = 0; i < boardSize.rows; i++) {
+      for (let j = 0; j < boardSize.cols; j++) {
+        if (board[i][j] !== i * boardSize.cols + j + 1) {
           return false;
         }
       }
@@ -123,6 +130,7 @@ let emptyCol = board[emptyRow].indexOf(0);
   };
 
   return (
+
     <div className="App">
       <div className="board">
         {board.map((row, rowIndex) => (
